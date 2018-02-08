@@ -6,3 +6,4 @@ module ReviewBot
       "ReviewBot"
     end
   end
+end
