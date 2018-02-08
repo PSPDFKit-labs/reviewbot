@@ -10,6 +10,7 @@ gem "activerecord"
 gem "octokit"
 
 group :development do
+  gem "dotenv"
   gem "sqlite3"
   gem "foreman"
 end
