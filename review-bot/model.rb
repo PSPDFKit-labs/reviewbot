@@ -1,11 +1,15 @@
 module ReviewBot
   class ReviewModel < SlackRubyBot::MVC::Model::Base
     def initialize
-      ActiveRecord::Base.establish_connection(
-        adapter: "sqlite3",
-        host: "localhost",
-        database: "test.db"
-      )
+      if ENV["DATABASE_URL"]
+        ActiveRecord::Base.establish_connection(ENV["DATABASE_URL"])
+      else
+        ActiveRecord::Base.establish_connection(
+          adapter: "sqlite3",
+          host: "localhost",
+          database: "test.db"
+        )
+      end
 
       unless ActiveRecord::Base.connection.table_exists?("users")
         ActiveRecord::Schema.define do
