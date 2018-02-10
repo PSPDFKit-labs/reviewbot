@@ -2,7 +2,7 @@ require "review-bot/database"
 require "review-bot/user"
 
 module ReviewBot
-  class ReviewModel < SlackRubyBot::MVC::Model::Base
+  class ReviewBotModel < SlackRubyBot::MVC::Model::Base
     def initialize
       Database.connect
 

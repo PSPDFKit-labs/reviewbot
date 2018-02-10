@@ -1,5 +1,5 @@
 module ReviewBot
-  class ReviewView < SlackRubyBot::MVC::View::Base
+  class ReviewBotView < SlackRubyBot::MVC::View::Base
     def react_wait
       client.web_client.reactions_add(
         name: :hourglass_flowing_sand,

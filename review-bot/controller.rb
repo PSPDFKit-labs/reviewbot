@@ -1,7 +1,7 @@
 require "octokit"
 
 module ReviewBot
-  class ReviewController < SlackRubyBot::MVC::Controller::Base
+  class ReviewBotController < SlackRubyBot::MVC::Controller::Base
     attr_reader :gh_client
 
     def initialize(model, view)

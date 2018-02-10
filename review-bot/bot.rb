@@ -1,8 +1,8 @@
 module ReviewBot
   class Bot < SlackRubyBot::Bot
-    model = ReviewModel.new
-    view = ReviewView.new
-    @controller = ReviewController.new(model, view)
+    model = ReviewBotModel.new
+    view = ReviewBotView.new
+    @controller = ReviewBotController.new(model, view)
 
     help do
       title "Review Bot"
