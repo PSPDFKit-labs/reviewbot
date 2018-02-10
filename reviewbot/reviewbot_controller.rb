@@ -2,6 +2,9 @@ require "octokit"
 
 module ReviewBot
   class ReviewBotController < SlackRubyBot::MVC::Controller::Base
+    define_callbacks :react
+    set_callback :react, :around, :around_reaction
+
     attr_reader :gh_client
 
     def initialize(model, view)
@@ -56,21 +59,25 @@ module ReviewBot
 
     def review
       return unless values_set?
-      
-      view.react_wait
 
-      pull_requests = find_pull_requests
-      requested_as_reviewer = pull_requests[:requested_as_reviewer]
-      need_review = pull_requests[:need_review]
-
-      view.unreact_wait
-      view.post_reviewable_pull_requests(requested_as_reviewer, need_review)
+      run_callbacks :react do
+        pull_requests = find_pull_requests
+        requested_as_reviewer = pull_requests[:requested_as_reviewer]
+        need_review = pull_requests[:need_review]
+        view.post_reviewable_pull_requests(requested_as_reviewer, need_review)
+      end
     end
 
     private
 
     def say(text)
       view.say(channel: data.channel, text: text)
+    end
+
+    def around_reaction
+      view.react_wait
+      yield
+      view.unreact_wait
     end
 
     def values_set?
