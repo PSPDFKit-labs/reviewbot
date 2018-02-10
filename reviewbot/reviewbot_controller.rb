@@ -55,26 +55,14 @@ module ReviewBot
     end
 
     def review
+      return unless values_set?
+      
       view.react_wait
+
+
       github_user = model.github_user
-      if github_user.nil?
-        say("No GitHub username set")
-        return
-      end
-
-      repos = model.repos
-      if repos.nil?
-        say("No repos set")
-        return
-      end
-      repos = repos.split(",")
-
-      labels = model.labels
-      if labels.nil? && repos.include?("PSPDFKit")
-        say("No labels set")
-        return 
-      end
-      labels = labels.split(",")
+      repos = model.repos.split(",")
+      labels = model.labels.split(",")
 
       all_pull_requests_with_request_for_user = []
       all_reviewable_pull_requests = []
@@ -129,6 +117,27 @@ module ReviewBot
 
     def say(text)
       view.say(channel: data.channel, text: text)
+    end
+
+    def values_set?
+      values_set = true
+
+      if model.github_user.nil?
+        say("Please set GitHub username first")
+        values_set = false
+      end
+
+      if model.repos.nil?
+        say("Please set repositories first")
+        values_set = false
+      end
+
+      if model.labels.nil?
+        say("Please set labels first")
+        values_set = false
+      end
+
+      values_set
     end
   end
 end
