@@ -18,36 +18,42 @@ module ReviewBot
       )
     end
 
-    def post_reviewable_pull_requests(pull_requests_with_request_for_user, reviewable_pull_requests)
-      unless pull_requests_with_request_for_user.empty?
-        formatted_pull_requests_with_request_for_user = format_pull_requests(pull_requests_with_request_for_user)
+    def post_reviewable_pull_requests(requested_as_reviewer:, need_review:)
+      if requested_as_reviewer.empty?
+        say(channel: data.channel, text: "There are no pull requests that requested your review.")
+      else
+        formatted_requested_as_reviewer = format_pull_requests(requested_as_reviewer)
 
         client.web_client.chat_postMessage(
           channel: data.channel,
           as_user: true,
           attachments: [
             {
-              fallback: formatted_pull_requests_with_request_for_user,
+              fallback: "Pull Requests Awaiting Your Review:\n\n#{formatted_requested_as_reviewer}",
               title: "Pull Requests Awaiting Your Review",
-              text: formatted_pull_requests_with_request_for_user,
-              color: "#00b900"
+              pretext: "Your review was requested in the following pull requests:",
+              text: formatted_requested_as_reviewer,
+              color: "#03b70b"
             }
           ]
         )
       end
 
-      unless reviewable_pull_requests.empty?
-        formatted_reviewable_pull_requests = format_pull_requests(reviewable_pull_requests)
+      if need_review.empty?
+        say(channel: data.channel, text: "There are no pull requests that need to be reviewed.")
+      else
+        formatted_need_review = format_pull_requests(need_review)
 
         client.web_client.chat_postMessage(
           channel: data.channel,
           as_user: true,
           attachments: [
             {
-              fallback: formatted_reviewable_pull_requests,
+              fallback: "Ready for Review Pull Requests:\n\n#{formatted_need_review}",
               title: "Ready for Review Pull Requests",
-              text: formatted_reviewable_pull_requests,
-              color: "#00b900"
+              pretext: "The following pull requests need to be reviewed:",
+              text: formatted_need_review,
+              color: "#03b70b"
             }
           ]
         )
@@ -62,7 +68,7 @@ module ReviewBot
         title = pull_request.title
         url = pull_request.html_url
         "##{number} - #{title}:\n#{url}"
-      end.join("\n")
+      end.join("\n\n")
     end
   end
 end

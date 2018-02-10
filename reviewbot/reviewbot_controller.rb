@@ -22,13 +22,13 @@ module ReviewBot
       if match[:expression].nil?
         github_user = model.github_user
         if github_user.nil?
-          say("No GitHub username set")
+          say("No GitHub username set.")
         else
           say("GitHub username: #{github_user}")
         end
       else
         model.set_github_user
-        say("Set GitHub username")
+        say("Set GitHub username.")
       end
     end
 
@@ -36,13 +36,13 @@ module ReviewBot
       if match[:expression].nil?
         repos = model.repos
         if repos.nil?
-          say("No repos set")
+          say("No repos set.")
         else
           say("Repos: #{repos}")
         end
       else
         model.set_repos
-        say("Set repos")
+        say("Set repos.")
       end
     end
 
@@ -50,13 +50,13 @@ module ReviewBot
       if match[:expression].nil?
         labels = model.labels
         if labels.nil?
-          say("No labels set")
+          say("No labels set.")
         else
           say("Labels: #{labels}")
         end
       else
         model.set_labels
-        say("Set labels")
+        say("Set labels.")
       end
     end
 
@@ -67,7 +67,7 @@ module ReviewBot
         pull_requests = find_pull_requests
         requested_as_reviewer = pull_requests[:requested_as_reviewer]
         need_review = pull_requests[:need_review]
-        view.post_reviewable_pull_requests(requested_as_reviewer, need_review)
+        view.post_reviewable_pull_requests(requested_as_reviewer: requested_as_reviewer, need_review: need_review)
       end
     end
 
@@ -91,17 +91,17 @@ module ReviewBot
       values_set = true
 
       if model.github_user.nil?
-        say("Please set GitHub username first")
+        say("Please set GitHub username first.")
         values_set = false
       end
 
       if model.repos.nil?
-        say("Please set repositories first")
+        say("Please set repositories first.")
         values_set = false
       end
 
       if model.labels.nil?
-        say("Please set labels first")
+        say("Please set labels first.")
         values_set = false
       end
 
