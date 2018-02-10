@@ -59,7 +59,42 @@ module ReviewBot
       
       view.react_wait
 
+      pull_requests = find_pull_requests
+      requested_as_reviewer = pull_requests[:requested_as_reviewer]
+      need_review = pull_requests[:need_review]
 
+      view.unreact_wait
+      view.post_reviewable_pull_requests(requested_as_reviewer, need_review)
+    end
+
+    private
+
+    def say(text)
+      view.say(channel: data.channel, text: text)
+    end
+
+    def values_set?
+      values_set = true
+
+      if model.github_user.nil?
+        say("Please set GitHub username first")
+        values_set = false
+      end
+
+      if model.repos.nil?
+        say("Please set repositories first")
+        values_set = false
+      end
+
+      if model.labels.nil?
+        say("Please set labels first")
+        values_set = false
+      end
+
+      values_set
+    end
+
+    def find_pull_requests
       github_user = model.github_user
       repos = model.repos.split(",")
       labels = model.labels.split(",")
@@ -109,35 +144,7 @@ module ReviewBot
         all_reviewable_pull_requests += reviewable_pull_requests
       end
 
-      view.unreact_wait
-      view.post_reviewable_pull_requests(all_pull_requests_with_request_for_user, all_reviewable_pull_requests)
-    end
-
-    private
-
-    def say(text)
-      view.say(channel: data.channel, text: text)
-    end
-
-    def values_set?
-      values_set = true
-
-      if model.github_user.nil?
-        say("Please set GitHub username first")
-        values_set = false
-      end
-
-      if model.repos.nil?
-        say("Please set repositories first")
-        values_set = false
-      end
-
-      if model.labels.nil?
-        say("Please set labels first")
-        values_set = false
-      end
-
-      values_set
+      { requested_as_reviewer: all_pull_requests_with_request_for_user, need_review: all_reviewable_pull_requests }
     end
   end
 end
