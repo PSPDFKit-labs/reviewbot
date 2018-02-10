@@ -1,7 +1,5 @@
 require "slack-ruby-bot"
-require "active_record"
-require "octokit"
-require "review-bot/user"
+
 require "review-bot/model"
 require "review-bot/view"
 require "review-bot/controller"

@@ -1,3 +1,5 @@
+require "active_record"
+
 module ReviewBot
   class Database
     def self.connect

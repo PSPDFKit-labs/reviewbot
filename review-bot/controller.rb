@@ -1,3 +1,5 @@
+require "octokit"
+
 module ReviewBot
   class ReviewController < SlackRubyBot::MVC::Controller::Base
     attr_reader :gh_client
