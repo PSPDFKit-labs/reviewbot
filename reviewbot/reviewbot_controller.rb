@@ -2,6 +2,8 @@ require "octokit"
 
 module ReviewBot
   class ReviewBotController < SlackRubyBot::MVC::Controller::Base
+    READY_LABELS = ["READY TO REVIEW", "ready for review", "READY", "review"]
+
     define_callbacks :react
     set_callback :react, :around, :around_reaction
 
@@ -75,6 +77,10 @@ module ReviewBot
       view.say(channel: data.channel, text: text)
     end
 
+    def log(text)
+      SlackRubyBot::Client.logger.info(text)
+    end
+
     def around_reaction
       view.react_wait
       yield
@@ -104,55 +110,63 @@ module ReviewBot
 
     def find_pull_requests
       github_user = model.github_user
-      repos = model.repos.split(",")
+      log("Finding reviewable pull requests for GitHub user #{github_user}")
+
+      repositories = model.repos.split(",").map { |repo| "PSPDFKit/#{repo}" }
       labels = model.labels.split(",")
 
-      all_pull_requests_with_request_for_user = []
-      all_reviewable_pull_requests = []
-
-      repos.each do |repo|
-        repo = "PSPDFKit/#{repo}"
-        pull_requests = gh_client.pull_requests(repo, state: "open")
-
-        # Remove pull requests created by the GitHub user
-        pull_requests.reject! { |pr| pr.user.login == github_user }
-
-        # Find pull requests with reviewers
-        pull_requests_with_request_for_user = []
-        pull_requests_with_request = pull_requests.select do |pull_request|
-          id = pull_request.number
-          review_requests = gh_client.pull_request_review_requests(repo, id)
-          if review_requests.users.any? { |user| user.login == github_user }
-            pull_requests_with_request_for_user << pull_request
-          end
-          !review_requests.users.empty?
-        end
-
-        # Find pull requests that are ready for review
-        reviewable_pull_requests = pull_requests - pull_requests_with_request
-        reviewable_pull_requests.select! do |pull_request|
-          id = pull_request.number
-          pr_labels = gh_client.labels_for_issue(repo, id).map(&:name)
-          ready_for_review = pr_labels.any? do |label|
-            label == "READY TO REVIEW" ||
-            label == "ready to review" ||
-            label == "READY" ||
-            label == "ready"
-          end
-
-          if repo == "PSPDFKit/PSPDFKit"
-            pr_has_all_labels = (labels - pr_labels).empty?
-            ready_for_review && pr_has_all_labels
-          else
-            ready_for_review
-          end
-        end
-
-        all_pull_requests_with_request_for_user += pull_requests_with_request_for_user
-        all_reviewable_pull_requests += reviewable_pull_requests
+      pull_requests = repositories.flat_map do |repository|
+        gh_client.pull_requests(repository, state: "open")
       end
 
-      { requested_as_reviewer: all_pull_requests_with_request_for_user, need_review: all_reviewable_pull_requests }
+      requested_as_reviewer = pull_requests.select do |pull_request|
+        requested_reviewers = pull_request.requested_reviewers.map { |reviewers| reviewers.login }
+        requested_reviewers.include?(github_user)
+      end
+
+      # Filter out pull requests that are assigned or were created by the user
+      pull_requests_by_other_users = pull_requests.reject do |pull_request|
+        assignees = pull_request.assignees
+        if assignees.empty?
+          pull_request.user.login == github_user
+        else
+          assignees.include?(github_user)
+        end
+      end
+
+      # Select all pull requests with a ready label
+      ready_pull_requests = pull_requests_by_other_users.select do |pull_request|
+        repository = pull_request.base.repo.full_name
+
+        pull_request_labels = gh_client.labels_for_issue(repository, pull_request.number).map do |label|
+          label.name
+        end
+
+        ready = READY_LABELS.any? { |label| pull_request_labels.include?(label) }
+        has_labels =
+          if repository == "PSPDFKit/PSPDFKit"
+            labels.all? { |label| pull_request_labels.include?(label) }
+          else
+            true
+          end
+
+        ready && has_labels
+      end
+
+      # Filter out pull requests with reviews or reviewers
+      need_review = ready_pull_requests.select do |pull_request|
+        repository = pull_request.base.repo.full_name
+
+        reviews = gh_client.pull_request_reviews(repository, pull_request.number).select do |review|
+          %w[APPROVED CHANGES_REQUESTED].include?(review.state)
+        end
+
+        requested_reviewers = pull_request.requested_reviewers
+
+        (reviews + requested_reviewers).empty?
+      end
+
+      { requested_as_reviewer: requested_as_reviewer, need_review: need_review }
     end
   end
 end
