@@ -1,26 +1,12 @@
+require "review-bot/database"
+
 module ReviewBot
   class ReviewModel < SlackRubyBot::MVC::Model::Base
     def initialize
-      if ENV["DATABASE_URL"]
-        ActiveRecord::Base.establish_connection(ENV["DATABASE_URL"])
-      else
-        ActiveRecord::Base.establish_connection(
-          adapter: "sqlite3",
-          host: "localhost",
-          database: "test.db"
-        )
-      end
+      Database.connect
 
-      unless ActiveRecord::Base.connection.table_exists?("users")
-        ActiveRecord::Schema.define do
-          create_table :users do |t|
-            t.string :slack_user
-            t.string :github_user
-            t.string :repos
-            t.string :labels
-          end
-        end
-      end
+      return if Database.table_exists?("users")
+      Database.create_table
     end
 
     def set_github_user
