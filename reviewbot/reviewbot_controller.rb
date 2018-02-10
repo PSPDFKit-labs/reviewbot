@@ -6,6 +6,7 @@ module ReviewBot
     set_callback :react, :around, :around_reaction
 
     attr_reader :gh_client
+    private :gh_client
 
     def initialize(model, view)
       super(model, view)
