@@ -1,5 +1,5 @@
-require "review-bot/database"
-require "review-bot/user"
+require "reviewbot/database"
+require "reviewbot/user"
 
 module ReviewBot
   class ReviewBotModel < SlackRubyBot::MVC::Model::Base
