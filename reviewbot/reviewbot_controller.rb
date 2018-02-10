@@ -6,7 +6,10 @@ module ReviewBot
 
     def initialize(model, view)
       super(model, view)
-      @gh_client = Octokit::Client.new(access_token: ENV["GITHUB_ACCESS_TOKEN"])
+
+      gh_token = ENV["GITHUB_ACCESS_TOKEN"]
+      raise "Missing ENV[\"GITHUB_ACCESS_TOKEN\"]" unless gh_token
+      @gh_client = Octokit::Client.new(access_token: gh_token)
     end
 
     def username
