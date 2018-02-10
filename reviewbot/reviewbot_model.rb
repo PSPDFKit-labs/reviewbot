@@ -20,13 +20,13 @@ module ReviewBot
       end
     end
 
-    def set_repos
+    def set_repositories
       user = User.find_by(slack_user: data.user)
       if user.nil?
-        user = User.new(slack_user: data.user, repos: match[:expression])
+        user = User.new(slack_user: data.user, repositories: match[:expression])
         user.save
       else
-        user.update(repos: match[:expression])
+        user.update(repositories: match[:expression])
       end
     end
 
@@ -49,12 +49,12 @@ module ReviewBot
       end
     end
 
-    def repos
+    def repositories
       user = User.find_by(slack_user: data.user)
       if user.nil?
         nil
       else
-        user.repos
+        user.repositories
       end
     end
 

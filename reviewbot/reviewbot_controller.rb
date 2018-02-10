@@ -32,17 +32,17 @@ module ReviewBot
       end
     end
 
-    def repos
+    def repositories
       if match[:expression].nil?
-        repos = model.repos
-        if repos.nil?
-          say("No repos set.")
+        repositories = model.repositories
+        if repositories.nil?
+          say("No repositories set.")
         else
-          say("Repos: #{repos}")
+          say("Repositories: #{repositories}")
         end
       else
-        model.set_repos
-        say("Set repos.")
+        model.set_repositories
+        say("Set repositories.")
       end
     end
 
@@ -95,7 +95,7 @@ module ReviewBot
         values_set = false
       end
 
-      if model.repos.nil?
+      if model.repositories.nil?
         say("Please set repositories first.")
         values_set = false
       end
@@ -112,7 +112,7 @@ module ReviewBot
       github_user = model.github_user
       log("Finding reviewable pull requests for GitHub user #{github_user}")
 
-      repositories = model.repos.split(",").map { |repo| "PSPDFKit/#{repo}" }
+      repositories = model.repositories.split(",").map { |repository| "PSPDFKit/#{repository}" }
       labels = model.labels.split(",")
 
       pull_requests = repositories.flat_map do |repository|

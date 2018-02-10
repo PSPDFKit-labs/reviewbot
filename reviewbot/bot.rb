@@ -12,8 +12,8 @@ module ReviewBot
         desc "Set your GitHub username with: username <github-username>"
       end
 
-      command "repos" do
-        desc "Set your repos with: repos <repo1,repo2>"
+      command "repositories" do
+        desc "Set your repositories with: repositories <repository1,repository2>"
       end
 
       command "labels" do

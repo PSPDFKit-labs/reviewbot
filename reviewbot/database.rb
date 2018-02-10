@@ -19,7 +19,7 @@ module ReviewBot
         create_table :users do |table|
           table.string :slack_user
           table.string :github_user
-          table.string :repos
+          table.string :repositories
           table.string :labels
         end
       end
