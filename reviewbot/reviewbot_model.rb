@@ -21,22 +21,24 @@ module ReviewBot
     end
 
     def set_repositories
+      repositories = match[:expression].split(",")
       user = User.find_by(slack_user: data.user)
       if user.nil?
-        user = User.new(slack_user: data.user, repositories: match[:expression])
+        user = User.new(slack_user: data.user, repositories: repositories)
         user.save
       else
-        user.update(repositories: match[:expression])
+        user.update(repositories: repositories)
       end
     end
 
     def set_labels
+      labels = match[:expression].split(",")
       user = User.find_by(slack_user: data.user)
       if user.nil?
-        user = User.new(slack_user: data.user, labels: match[:expression])
+        user = User.new(slack_user: data.user, labels: labels)
         user.save
       else
-        user.update(labels: match[:expression])
+        user.update(labels: labels)
       end
     end
 

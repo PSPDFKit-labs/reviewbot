@@ -38,7 +38,7 @@ module ReviewBot
         if repositories.nil?
           say("No repositories set.")
         else
-          say("Repositories: #{repositories}")
+          say("Repositories: #{repositories.join(", ")}")
         end
       else
         model.set_repositories
@@ -52,7 +52,7 @@ module ReviewBot
         if labels.nil?
           say("No labels set.")
         else
-          say("Labels: #{labels}")
+          say("Labels: #{labels.join(", ")}")
         end
       else
         model.set_labels
@@ -112,8 +112,8 @@ module ReviewBot
       github_user = model.github_user
       log("Finding reviewable pull requests for GitHub user #{github_user}")
 
-      repositories = model.repositories.split(",").map { |repository| "PSPDFKit/#{repository}" }
-      labels = model.labels.split(",")
+      repositories = model.repositories.map { |repository| "PSPDFKit/#{repository}" }
+      labels = model.labels
 
       pull_requests = repositories.flat_map do |repository|
         gh_client.pull_requests(repository, state: "open")

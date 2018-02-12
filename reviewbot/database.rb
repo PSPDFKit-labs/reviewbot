@@ -23,8 +23,8 @@ module ReviewBot
         create_table :users do |table|
           table.string :slack_user
           table.string :github_user
-          table.string :repositories
-          table.string :labels
+          table.string :repositories, array: true
+          table.string :labels, array: true
         end
       end
     end
