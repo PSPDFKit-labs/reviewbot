@@ -137,10 +137,7 @@ module ReviewBot
       # Select all pull requests with a ready label
       ready_pull_requests = pull_requests_by_other_users.select do |pull_request|
         repository = pull_request.base.repo.full_name
-
-        pull_request_labels = gh_client.labels_for_issue(repository, pull_request.number).map do |label|
-          label.name
-        end
+        pull_request_labels = pull_request.labels.map { |label| label.name }
 
         ready = READY_LABELS.any? { |label| pull_request_labels.include?(label) }
         has_labels =
@@ -157,13 +154,14 @@ module ReviewBot
       need_review = ready_pull_requests.select do |pull_request|
         repository = pull_request.base.repo.full_name
 
+        requested_reviewers = pull_request.requested_reviewers
+        return false unless requested_reviewers.empty?
+
         reviews = gh_client.pull_request_reviews(repository, pull_request.number).select do |review|
           %w[APPROVED CHANGES_REQUESTED].include?(review.state)
         end
 
-        requested_reviewers = pull_request.requested_reviewers
-
-        (reviews + requested_reviewers).empty?
+        reviews.empty?
       end
 
       { requested_as_reviewer: requested_as_reviewer, need_review: need_review }
