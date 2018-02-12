@@ -6,7 +6,11 @@ module ReviewBot
       if ENV["DATABASE_URL"]
         ActiveRecord::Base.establish_connection(ENV["DATABASE_URL"])
       else
-        ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: "test.db")
+        ActiveRecord::Base.establish_connection(
+          adapter: "postgresql",
+          host: "localhost",
+          database: "reviewbot"
+        )
       end
     end
 
