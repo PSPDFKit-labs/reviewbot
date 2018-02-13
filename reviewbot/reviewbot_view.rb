@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ReviewBot
   class ReviewBotView < SlackRubyBot::MVC::View::Base
     def react_wait

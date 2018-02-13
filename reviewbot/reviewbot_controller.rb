@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "reviewbot/github"
 
 module ReviewBot

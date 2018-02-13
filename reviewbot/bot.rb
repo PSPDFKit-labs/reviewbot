@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ReviewBot
   class Bot < SlackRubyBot::Bot
     model = ReviewBotModel.new
