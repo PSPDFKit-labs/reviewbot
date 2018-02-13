@@ -13,12 +13,16 @@ module ReviewBot
       end
 
       command "repositories" do
-        desc "Set your repositories with: repositories <repository1,repository2>"
+        desc "Set your repositories comma-separated with: repositories <repository1,repository2>"
       end
 
       command "labels" do
-        desc "Set your labels with: labels <label1,label2>"
+        desc "Set your labels comma-separated with: labels <label1,label2>"
         long_desc "Labels only apply to the PSPDFKit monorepo."
+      end
+
+      command "review" do
+        desc "Shows you reviewable pull requests."
       end
     end
   end
