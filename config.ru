@@ -8,6 +8,8 @@ end
 require "reviewbot"
 require "web"
 
+Thread.abort_on_exception = true
+
 Thread.new do
   begin
     ReviewBot::Bot.run
