@@ -23,5 +23,3 @@ module ReviewBot
     end
   end
 end
-
-ReviewBot::Bot.run
