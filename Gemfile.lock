@@ -61,6 +61,7 @@ GEM
     rack (2.0.4)
     rack-protection (2.0.0)
       rack
+    rake (12.3.0)
     sawyer (0.8.1)
       addressable (>= 2.3.5, < 2.6)
       faraday (~> 0.8, < 1.0)
@@ -101,8 +102,10 @@ DEPENDENCIES
   octokit
   pg (~> 0.21)
   puma
+  rake
   sinatra
   slack-ruby-bot
+  slack-ruby-client
 
 RUBY VERSION
    ruby 2.5.0p0

@@ -20,20 +20,28 @@ module ReviewBot
         client.pull_requests(repository, state: "open")
       end
 
-      requested_as_reviewer = pull_requests.select do |pull_request|
-        requested_reviewers = pull_request.requested_reviewers.map { |reviewers| reviewers.login }
-        requested_reviewers.include?(github_user)
-      end
+      requested_as_reviewer = if github_user.nil?
+                                nil
+                              else
+                                pull_requests.select do |pull_request|
+                                  requested_reviewers = pull_request.requested_reviewers.map { |reviewers| reviewers.login }
+                                  requested_reviewers.include?(github_user)
+                                end
+                              end
 
-      # Filter out pull requests that are assigned or were created by the user
-      pull_requests_by_other_users = pull_requests.reject do |pull_request|
-        assignees = pull_request.assignees
-        if assignees.empty?
-          pull_request.user.login == github_user
-        else
-          assignees.include?(github_user)
-        end
-      end
+      pull_requests_by_other_users = if github_user.nil?
+                                       pull_requests
+                                     else
+                                       # Filter out pull requests that are assigned or were created by the user
+                                       pull_requests.reject do |pull_request|
+                                         assignees = pull_request.assignees
+                                         if assignees.empty?
+                                           pull_request.user.login == github_user
+                                         else
+                                           assignees.include?(github_user)
+                                         end
+                                       end
+                                     end
 
       # Select all pull requests with a ready label
       ready_pull_requests = pull_requests_by_other_users.select do |pull_request|
