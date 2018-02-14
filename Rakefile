@@ -2,6 +2,7 @@
 
 $LOAD_PATH.unshift(__dir__)
 
+require "date"
 require "slack-ruby-client"
 require "reviewbot/github"
 
@@ -16,6 +17,12 @@ Slack.configure do |config|
 end
 
 task :post_reviewable_pull_requests do
+  today = Date.today
+  if today.saturday? || today.sunday?
+    puts "Not posting on the weekend"
+    next
+  end
+
   slack_client = Slack::Web::Client.new
   github = ReviewBot::GitHub.new
   repositories = %w[PSPDFKit]
