@@ -24,7 +24,7 @@ module ReviewBot
       if requested_as_reviewer.empty?
         say(channel: data.channel, text: "There are no pull requests that requested your review.")
       else
-        formatted_requested_as_reviewer = self.class.format_pull_requests(requested_as_reviewer)
+        formatted_requested_as_reviewer = format_pull_requests(requested_as_reviewer)
 
         client.web_client.chat_postMessage(
           channel: data.channel,
@@ -44,7 +44,7 @@ module ReviewBot
       if need_review.empty?
         say(channel: data.channel, text: "There are no pull requests that need to be reviewed.")
       else
-        formatted_need_review = self.class.format_pull_requests(need_review)
+        formatted_need_review = format_pull_requests(need_review)
 
         client.web_client.chat_postMessage(
           channel: data.channel,
@@ -62,7 +62,9 @@ module ReviewBot
       end
     end
 
-    def self.format_pull_requests(pull_requests)
+    private
+
+    def format_pull_requests(pull_requests)
       pull_requests.map do |pull_request|
         number = pull_request.number
         title = pull_request.title

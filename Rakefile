@@ -2,10 +2,8 @@
 
 $LOAD_PATH.unshift(__dir__)
 
-require "slack-ruby-bot"
 require "slack-ruby-client"
 require "reviewbot/github"
-require "reviewbot/reviewbot_view"
 
 unless ENV["RACK_ENV"] == "production"
   require "dotenv"
@@ -22,21 +20,29 @@ task :post_reviewable_pull_requests do
   github = ReviewBot::GitHub.new
   repositories = %w[PSPDFKit]
   labels = %w[iOS]
+  channel = "ios"
 
   need_review = github.reviewable_pull_requests(repositories: repositories, labels: labels)[:need_review]
-  formatted_need_review = ReviewBot::ReviewBotView.format_pull_requests(need_review)
 
-  slack_client.chat_postMessage(
-    channel: "ios",
-    as_user: true,
-    attachments: [
-      {
-        fallback: "Ready for Review Pull Requests:\n\n#{formatted_need_review}",
-        title: "Ready for Review Pull Requests",
-        pretext: "The following pull requests need to be reviewed:",
-        text: formatted_need_review,
-        color: "#03b70b"
-      }
-    ]
-  )
+  if need_review.empty?
+    slack_client.chat_postMessage(channel: channel, text: "There are no pull requests that need to be reviewed.", as_user: true)
+    next
+  end
+
+  slack_client.chat_postMessage(channel: channel, text: "The following pull requests need to be reviewed:", as_user: true)
+
+  need_review.each do |pull_request|
+    slack_client.chat_postMessage(
+      channel: channel,
+      as_user: true,
+      attachments: [
+        {
+          fallback: "##{pull_request.number} - #{pull_request.title}:\n#{pull_request.html_url}",
+          title: "##{pull_request.number}",
+          text: "#{pull_request.title}:\n#{pull_request.html_url}",
+          color: "#03b70b"
+        }
+      ]
+    )
+  end
 end
