@@ -66,7 +66,7 @@ module ReviewBot
         repository = pull_request.base.repo.full_name
 
         requested_reviewers = pull_request.requested_reviewers
-        return false unless requested_reviewers.empty?
+        next false unless requested_reviewers.empty?
 
         reviews = client.pull_request_reviews(repository, pull_request.number).select do |review|
           %w[APPROVED CHANGES_REQUESTED].include?(review.state)
