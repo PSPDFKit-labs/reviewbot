@@ -46,29 +46,17 @@ module ReviewBot
 
     def github_user
       user = User.find_by(slack_user: data.user)
-      if user.nil?
-        nil
-      else
-        user.github_user
-      end
+      user&.github_user
     end
 
     def repositories
       user = User.find_by(slack_user: data.user)
-      if user.nil?
-        nil
-      else
-        user.repositories
-      end
+      user&.repositories
     end
 
     def labels
       user = User.find_by(slack_user: data.user)
-      if user.nil?
-        nil
-      else
-        user.labels
-      end
+      user&.labels
     end
   end
 end
