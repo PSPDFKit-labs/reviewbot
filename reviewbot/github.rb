@@ -4,19 +4,32 @@ require "octokit"
 
 module ReviewBot
   class GitHub
-    READY_LABELS = ["READY TO REVIEW", "ready for review", "READY", "review"]
-
     attr_reader :client
+    attr_reader :organization
+    attr_reader :ready_labels
+    attr_reader :label_repositories
     private :client
+    private :organization
+    private :ready_labels
+    private :label_repositories
 
     def initialize
       token = ENV["GITHUB_ACCESS_TOKEN"]
       raise "Missing ENV[\"GITHUB_ACCESS_TOKEN\"]" unless token
       @client = Octokit::Client.new(access_token: token)
+
+      @organization = ENV["ORGANIZATION"]
+      raise "Missing ENV[\"ORGANIZATION\"]" unless organization
+
+      @ready_labels = ENV["READY_LABELS"]&.split(",")
+      raise "Missing ENV[\"READY_LABELS\"]" unless ready_labels
+
+      @label_repositories = ENV["LABEL_REPOSITORIES"]&.split(",")&.map { |repository| "#{organization}/#{repository}" }
+      raise "Missing ENV[\"LABEL_REPOSITORIES\"]" unless label_repositories
     end
 
     def reviewable_pull_requests(github_user: nil, repositories:, labels:)
-      repositories = repositories.map { |repository| "PSPDFKit/#{repository}" }
+      repositories = repositories.map { |repository| "#{organization}/#{repository}" }
 
       pull_requests = repositories.flat_map do |repository|
         client.pull_requests(repository, state: "open")
@@ -50,9 +63,9 @@ module ReviewBot
         repository = pull_request.base.repo.full_name
         pull_request_labels = pull_request.labels.map { |label| label.name }
 
-        ready = READY_LABELS.any? { |label| pull_request_labels.include?(label) }
+        ready = ready_labels.any? { |label| pull_request_labels.include?(label) }
         has_labels =
-          if repository == "PSPDFKit/PSPDFKit"
+          if label_repositories.include?(repository)
             labels.all? { |label| pull_request_labels.include?(label) }
           else
             true
