@@ -74,8 +74,7 @@ module ReviewBot
 
       attributes = {
         github_user: "GitHub username",
-        repositories: "repositories",
-        labels: "labels"
+        repositories: "repositories"
       }
 
       attributes.each do |attribute, attribute_string|

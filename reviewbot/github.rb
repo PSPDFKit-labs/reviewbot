@@ -65,7 +65,9 @@ module ReviewBot
 
         ready = ready_labels.any? { |label| pull_request_labels.include?(label) }
         has_labels =
-          if label_repositories.include?(repository)
+          if labels.nil?
+            true
+          elsif label_repositories.include?(repository)
             labels.all? { |label| pull_request_labels.include?(label) }
           else
             true
