@@ -12,51 +12,21 @@ module ReviewBot
       Database.create_table
     end
 
-    def set_github_user
+    def set_user_attribute(attribute, value)
       user = User.find_by(slack_user: data.user)
       if user.nil?
-        user = User.new(slack_user: data.user, github_user: match[:expression])
+        arguments = { slack_user: data.user, attribute => value }
+        user = User.new(**arguments)
         user.save
       else
-        user.update(github_user: match[:expression])
+        arguments = { attribute => value }
+        user.update(**arguments)
       end
     end
 
-    def set_repositories
-      repositories = match[:expression].split(",")
+    def user_attribute(attribute)
       user = User.find_by(slack_user: data.user)
-      if user.nil?
-        user = User.new(slack_user: data.user, repositories: repositories)
-        user.save
-      else
-        user.update(repositories: repositories)
-      end
-    end
-
-    def set_labels
-      labels = match[:expression].split(",")
-      user = User.find_by(slack_user: data.user)
-      if user.nil?
-        user = User.new(slack_user: data.user, labels: labels)
-        user.save
-      else
-        user.update(labels: labels)
-      end
-    end
-
-    def github_user
-      user = User.find_by(slack_user: data.user)
-      user&.github_user
-    end
-
-    def repositories
-      user = User.find_by(slack_user: data.user)
-      user&.repositories
-    end
-
-    def labels
-      user = User.find_by(slack_user: data.user)
-      user&.labels
+      user&.send(attribute)
     end
   end
 end
