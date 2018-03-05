@@ -17,7 +17,7 @@ Slack.configure do |config|
 end
 
 desc "Posts reviewable pull requests into a channel"
-task :post_reviewable_pull_requests do
+task :post_reviewable_pull_requests, %i[repositories labels channel] do |_, args|
   today = Date.today
   if today.saturday? || today.sunday?
     puts "Not posting on the weekend"
@@ -26,9 +26,9 @@ task :post_reviewable_pull_requests do
 
   slack_client = Slack::Web::Client.new
   github = ReviewBot::GitHub.new
-  repositories = %w[PSPDFKit]
-  labels = %w[iOS]
-  channel = "ios"
+  repositories = args.repositories.split("+")
+  labels = args.labels.split("+")
+  channel = args.channel
 
   need_review = github.reviewable_pull_requests(repositories: repositories, labels: labels)[:need_review]
 
