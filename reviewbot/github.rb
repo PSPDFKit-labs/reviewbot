@@ -68,7 +68,7 @@ module ReviewBot
           if labels.nil?
             true
           elsif label_repositories.include?(repository)
-            labels.all? { |label| pull_request_labels.include?(label) }
+            labels.any? { |label| pull_request_labels.include?(label) }
           else
             true
           end
