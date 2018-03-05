@@ -16,6 +16,7 @@ Slack.configure do |config|
   raise "Missing ENV[\"SLACK_API_TOKEN\"]" unless config.token
 end
 
+desc "Posts reviewable pull requests into a channel"
 task :post_reviewable_pull_requests do
   today = Date.today
   if today.saturday? || today.sunday?
