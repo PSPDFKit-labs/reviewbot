@@ -24,12 +24,24 @@ module ReviewBot
       @ready_labels = ENV["READY_LABELS"]&.split(",")
       raise "Missing ENV[\"READY_LABELS\"]" unless ready_labels
 
-      @label_repositories = ENV["LABEL_REPOSITORIES"]&.split(",")&.map { |repository| "#{organization}/#{repository}" }
+      @label_repositories = ENV["LABEL_REPOSITORIES"]&.split(",")&.map do |repository|
+        if repository.include?("/")
+          repository
+        else
+          "#{organization}/#{repository}"
+        end
+      end
       raise "Missing ENV[\"LABEL_REPOSITORIES\"]" unless label_repositories
     end
 
     def reviewable_pull_requests(github_user: nil, repositories:, labels:)
-      repositories = repositories.map { |repository| "#{organization}/#{repository}" }
+      repositories = repositories.map do |repository|
+        if repository.include?("/")
+          repository
+        else
+          "#{organization}/#{repository}"
+        end
+      end
 
       pull_requests = repositories.flat_map do |repository|
         client.pull_requests(repository, state: "open")
