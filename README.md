@@ -6,13 +6,49 @@ Reviewbot shows you pull requests on GitHub that are ready to be reviewed. How d
 
 Meanwhile, all pull requests without this label are seen as works in progress and shouldn’t be reviewed. Next, an engineer can pick from the READY TO REVIEW pull requests and start reviewing — all code changes at PSPDFKit get reviewed by at least one other person. After the review is done, the pull request author incorporates the feedback and merges the PR.
 
-You need to have `SLACK_API_TOKEN` and `GITHUB_ACCESS_TOKEN` set. Start the bot with `foreman start`.
-
 Read more on the PSPDFKit Blog: https://pspdfkit.com/blog/2018/reviewbot
 
 # Made with ❤️ by PSPDFKit
 
 The [PSPDFKit SDK](https://pspdfkit.com/pdf-sdk/) is a framework that allows you to view, annotate, sign, and fill PDF forms on iOS, Android, Windows, macOS, and Web. [PSPDFKit Instant](https://pspdfkit.com/instant/) adds real-time collaboration features to seamlessly share, edit, and annotate PDF documents.
+
+# Deployment
+
+We recommend to deploy Reviewbot to [Heroku](https://www.heroku.com).
+
+# Available Environment Variables
+
+* `SLACK_API_TOKEN`: Your bot's Slack API token. You can create a new bot integration under [/servies/new/bot](http://slack.com/services/new/bot).
+* `GITHUB_ACCESS_TOKEN`: Your [personal access token for GitHub](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line).
+* `ORGANIZATION`: Your GitHub organization. Reviewbot will use this organization for repositories that didn't specify an organization, i.e. don't contain a slash.
+* `READY_LABELS`: Comma-separated list of labels you use to mark pull requests ready for review, e.g. `ready`, `ready for review` etc.
+* `LABEL_REPOSITORIES`: Comma-separated list of repositories that require additional labels. Monorepos that contain both iOS and Android code and use `iOS` and `Android` labels for example.
+
+# Rake Task
+
+You can use the `post_reviewable_pull_requests` Rake task and the [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) to post reviewable pull requests in specific channels at specific times. For example:
+
+```
+bundle exec rake post_reviewable_pull_requests[PSPDFKit+Viewer-iOS,iOS,ios]
+```
+
+The above example posts reviewable pull requests of the PSPDFKit and Viewer-iOS repositories if they have the `iOS` label (and the repository is in the `LABEL_REPOSITORIES` list) in the `#ios` Slack channel. Notice that repositories and labels are `+`-separated.
+
+# Development Setup
+
+1. `gem install bundler`
+2. `bundle install`
+3. Create an `.env` file with the following variables:
+
+```
+SLACK_API_TOKEN=<your-slack-api-token>
+GITHUB_ACCESS_TOKEN=<your-github-api-token>
+ORGANIZATION=<your-github-organization>
+READY_LABELS=<ready,ready-for-review,etc.>
+LABEL_REPOSITORIES=<repositories-that-require-additional-labels>
+```
+
+4. Start the bot with `bundle exec foreman start`.
 
 # License
 
