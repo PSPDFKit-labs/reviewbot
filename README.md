@@ -1,6 +1,6 @@
 # Reviewbot
 
-![](https://github.com/PSPDFKit-labs/reviewbot/blob/master/reviewbot.png?raw=true)
+[![](https://github.com/PSPDFKit-labs/reviewbot/blob/master/reviewbot.png?raw=true)](https://pspdfkit.com/blog/2018/reviewbot/)
 
 Reviewbot shows you pull requests on GitHub that are ready to be reviewed. How does it know when a pull request is ready? We have a special label in our repositories, aptly named READY TO REVIEW (all caps so it’s easier to spot). When a pull request is ready for review, the author adds this label to their PR to mark it as finished.
 
