@@ -1,6 +1,6 @@
 # Reviewbot
 
-
+![](https://github.com/PSPDFKit-labs/reviewbot/blob/master/reviewbot-logo.png?raw=true)
 
 Reviewbot shows you pull requests on GitHub that are ready to be reviewed. How does it know when a pull request is ready? We have a special label in our repositories, aptly named "READY TO REVIEW" (all caps so it's easier to spot). The pull request author adds this label to his or her PR to mark it as finished. All pull requests without this label are seen as work in progress and shouldn't be reviewed yet. An engineer can pick from the "ready to review" pull requests and start reviewing. All code changes at PSPDFKit get reviewed by at least one other person. After the review is done the pull request author incorporates the feedback and merges the PR.
 
