@@ -2,13 +2,17 @@
 
 ![](https://github.com/PSPDFKit-labs/reviewbot/blob/master/reviewbot.png?raw=true)
 
-Reviewbot shows you pull requests on GitHub that are ready to be reviewed. How does it know when a pull request is ready? We have a special label in our repositories, aptly named "READY TO REVIEW" (all caps so it's easier to spot). The pull request author adds this label to his or her PR to mark it as finished.
+Reviewbot shows you pull requests on GitHub that are ready to be reviewed. How does it know when a pull request is ready? We have a special label in our repositories, aptly named READY TO REVIEW (all caps so it’s easier to spot). When a pull request is ready for review, the author adds this label to their PR to mark it as finished.
 
-All pull requests without this label are seen as work in progress and shouldn't be reviewed yet. An engineer can pick from the "ready to review" pull requests and start reviewing. All code changes at PSPDFKit get reviewed by at least one other person. After the review is done the pull request author incorporates the feedback and merges the PR.
+Meanwhile, all pull requests without this label are seen as works in progress and shouldn’t be reviewed. Next, an engineer can pick from the READY TO REVIEW pull requests and start reviewing — all code changes at PSPDFKit get reviewed by at least one other person. After the review is done, the pull request author incorporates the feedback and merges the PR.
+
+You need to have `SLACK_API_TOKEN` and `GITHUB_ACCESS_TOKEN` set. Start the bot with `foreman start`.
 
 Read more on the PSPDFKit Blog: https://pspdfkit.com/blog/2018/reviewbot
 
-You need to have `SLACK_API_TOKEN` and `GITHUB_ACCESS_TOKEN` set. Start the bot with `foreman start`.
+# Made with ❤️ by PSPDFKit
+
+The [PSPDFKit SDK](https://pspdfkit.com/pdf-sdk/) is a framework that allows you to view, annotate, sign, and fill PDF forms on iOS, Android, Windows, macOS, and Web. [PSPDFKit Instant](https://pspdfkit.com/instant/) adds real-time collaboration features to seamlessly share, edit, and annotate PDF documents.
 
 # License
 
