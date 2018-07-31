@@ -29,7 +29,7 @@ We recommend to deploy Reviewbot to [Heroku](https://www.heroku.com).
 You can use the `post_reviewable_pull_requests` Rake task and the [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) to post reviewable pull requests in specific channels at specific times. For example:
 
 ```
-bundle exec rake post_reviewable_pull_requests[PSPDFKit+Viewer-iOS,iOS,ios]
+bundle exec rake post_reviewable_pull_requests[PSPDFKit+Viewer-iOS,ios,iOS]
 ```
 
 The above example posts reviewable pull requests of the PSPDFKit and Viewer-iOS repositories if they have the `iOS` label (and the repository is in the `LABEL_REPOSITORIES` list) in the `#ios` Slack channel. Notice that repositories and labels are `+`-separated.
