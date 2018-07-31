@@ -28,7 +28,7 @@ task :post_reviewable_pull_requests, %i[repositories channel labels] do |_, args
   github = ReviewBot::GitHub.new
   repositories = args.repositories.split("+")
   channel = args.channel
-  labels = args.labels.split("+")
+  labels = args.labels&.split("+")
 
   need_review = github.reviewable_pull_requests(repositories: repositories, labels: labels)[:need_review]
 
