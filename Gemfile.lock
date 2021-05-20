@@ -57,7 +57,8 @@ GEM
       sawyer (~> 0.8.0, >= 0.5.3)
     pg (0.21.0)
     public_suffix (3.0.2)
-    puma (3.12.0)
+    puma (4.3.8)
+      nio4r (~> 2.0)
     rack (2.0.5)
     rack-protection (2.0.3)
       rack
